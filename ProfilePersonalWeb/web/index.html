@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register Student Profile</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+    <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
+
+    body {
+        font-family: 'Inter', sans-serif;
+        background: #0d0e12;
+        min-height: 100vh;
+        color: #f3f4f6;
+        overflow-x: hidden;
+        position: relative;
+    }
+
+    #particle-canvas {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 1;
+        pointer-events: none; 
+    }
+
+    .container {
+        position: relative;
+        z-index: 2; 
+    }
+
+    .card {
+        position: relative;
+        border: none; 
+        border-radius: 24px;
+        background: rgba(18, 20, 26, 0.85);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+        overflow: visible; 
+        transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .card::before {
+        content: '';
+        position: absolute;
+        top: -2px;
+        left: -2px;
+        right: -2px;
+        bottom: -2px;
+        background: linear-gradient(45deg, #ff007f, #3b82f6, #a855f7, #38bdf8, #ff007f);
+        background-size: 400% 400%;
+        border-radius: 26px;
+        z-index: -1;
+        opacity: 0.4; 
+        transition: opacity 0.4s ease, filter 0.4s ease;
+        animation: rainbowAnimation 8s ease infinite;
+    }
+
+    .card:hover {
+        transform: translateY(-6px);
+    }
+
+    .card:hover::before {
+        opacity: 0.9;
+        filter: blur(12px); 
+    }
+
+    .card-content-wrapper {
+        position: relative;
+        background: rgba(18, 20, 26, 0.95);
+        border-radius: 24px;
+        overflow: hidden;
+        z-index: 1;
+    }
+
+    .card-header {
+        background: rgba(255, 255, 255, 0.02);
+        color: #ffffff;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        font-weight: 600;
+        letter-spacing: 0.5px;
+    }
+
+    .form-label {
+        font-size: 0.9rem;
+        color: #9ca3af;
+    }
+
+    .form-control {
+        border-radius: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 12px;
+        background: rgba(255, 255, 255, 0.03);
+        color: #ffffff;
+        transition: all 0.3s ease;
+    }
+
+    .form-control:focus {
+        outline: none;
+        color: #ffffff;
+        background: rgba(255, 255, 255, 0.06);
+        border-color: #6366f1;
+        box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.2);
+    }
+
+    .form-control::placeholder {
+        background: linear-gradient(90deg, #ff007f, #3b82f6, #a855f7, #38bdf8, #ff007f);
+        background-size: 200% auto;
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        font-size: 0.85rem;
+        font-weight: 500;
+        letter-spacing: 0.5px;
+        opacity: 0.75;
+        animation: rainbowAnimation 4s linear infinite;
+    }
+
+    .form-control::-webkit-input-placeholder {
+        background: linear-gradient(90deg, #ff007f, #3b82f6, #a855f7, #38bdf8, #ff007f);
+        background-size: 200% auto;
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: rainbowAnimation 4s linear infinite;
+    }
+
+    .uiverse-btn {
+        position: relative;
+        background-color: transparent;
+        border: none;
+        border-radius: 12px;
+        width: 100%;
+        height: 55px;
+        cursor: pointer;
+        overflow: hidden;
+        font-size: 1rem;
+        font-weight: 600;
+        display: block;
+        transition: all 0.3s cubic-bezier(0.23, 1, 0.320, 1);
+    }
+
+    .uiverse-btn:focus { outline: none; }
+    .uiverse-btn:active { transform: scale(0.98); }
+
+    .btn-save-rainbow::before {
+        content: "Save Profile Record";
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0; left: 0;
+        pointer-events: none;
+        background: linear-gradient(45deg, #ff007f, #3b82f6, #a855f7, #38bdf8, #ff007f);
+        background-size: 300% 300%;
+        color: #ffffff;
+        z-index: 2;
+        transform: translate(0%, 0%);
+        animation: rainbowAnimation 6s ease infinite;
+        transition: all 0.6s cubic-bezier(0.23, 1, 0.320, 1);
+    }
+
+    .btn-save-rainbow::after {
+        content: "Save Profile Record";
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0; left: 0;
+        pointer-events: none;
+        background-color: #0d0e12;
+        border: 2px solid transparent;
+        background-image: linear-gradient(#0d0e12, #0d0e12), linear-gradient(45deg, #ff007f, #3b82f6, #a855f7, #38bdf8, #ff007f);
+        background-origin: border-box;
+        background-clip: padding-box, border-box;
+        
+        background: linear-gradient(45deg, #ff007f, #3b82f6, #a855f7, #38bdf8, #ff007f);
+        background-size: 300% 300%;
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        
+        z-index: 1;
+        transform: translate(0%, 100%);
+        animation: rainbowAnimation 6s ease infinite;
+        transition: all 0.6s cubic-bezier(0.23, 1, 0.320, 1);
+    }
+
+    .btn-save-rainbow:hover::before { transform: translate(0%, -100%); }
+    .btn-save-rainbow:hover::after { transform: translate(0%, 0%); }
+
+    .btn-back-sliding::before {
+        content: "Back to Dashboard";
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0; left: 0;
+        pointer-events: none;
+        
+        background: #0d0e12;
+        border: 2px solid transparent;
+        background-image: linear-gradient(#0d0e12, #0d0e12), linear-gradient(45deg, #ff007f, #3b82f6, #a855f7, #38bdf8, #ff007f);
+        background-origin: border-box;
+        background-clip: padding-box, border-box;
+        background-size: 100%, 300% 300%;
+        
+        background-color: transparent;
+        background-image: linear-gradient(45deg, #ff007f, #3b82f6, #a855f7, #38bdf8, #ff007f);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        
+        z-index: 2;
+        transform: translate(0%, 0%);
+        animation: rainbowAnimation 6s ease infinite;
+        transition: all 0.6s cubic-bezier(0.23, 1, 0.320, 1);
+    }
+
+    .btn-back-sliding::after {
+        content: "Back to Dashboard";
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0; left: 0;
+        pointer-events: none;
+        
+        background-color: rgba(255, 255, 255, 0.05);
+        border: 2px solid transparent;
+        background-image: linear-gradient(rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.05)), linear-gradient(45deg, #ff007f, #3b82f6, #a855f7, #38bdf8, #ff007f);
+        background-origin: border-box;
+        background-clip: padding-box, border-box;
+        background-size: 100%, 300% 300%;
+        
+        background-image: linear-gradient(45deg, #ff3399, #5c9aff, #b975ff, #62d1ff, #ff3399);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        
+        z-index: 1;
+        transform: translate(0%, 100%);
+        animation: rainbowAnimation 6s ease infinite;
+        transition: all 0.6s cubic-bezier(0.23, 1, 0.320, 1);
+    }
+
+    .btn-back-sliding:hover::before { transform: translate(0%, -100%); }
+    .btn-back-sliding:hover::after { transform: translate(0%, 0%); }
+
+    @keyframes rainbowAnimation {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+
+    .card-body {
+        color: #e5e7eb;
+    }
+
+    @media (max-width: 768px) {
+        .card {
+            margin: 16px;
+        }
+    }
+    </style>
+</head>
+
+<body>
+
+    <canvas id="particle-canvas"></canvas>
+
+    <div class="container mt-5">
+        <div class="card shadow mx-auto" style="max-width: 650px;">
+            <div class="card-content-wrapper">
+                <div class="card-header text-center py-4">
+                    <h3 class="mb-0"><i class="fas fa-user-plus me-2"></i> Student Profile Registration</h3>
+                </div>
+
+                <div class="card-body p-4">
+                    <form action="ProfileServlet" method="POST">
+                        <input type="hidden" name="action" value="add">
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">Student ID</label>
+                                <input type="text" name="studentId" class="form-control" placeholder="e.g. 2024123456" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">Full Name</label>
+                                <input type="text" name="name" class="form-control" placeholder="e.g. Ahmad Dani" required>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">Programme</label>
+                                <input type="text" name="program" class="form-control" placeholder="e.g. CS230" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">Email Address</label>
+                                <input type="email" name="email" class="form-control" placeholder="e.g. student@uitm.edu.my" required>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Hobbies</label>
+                            <input type="text" name="hobbies" class="form-control" placeholder="e.g. Coding, Gaming, Reading">
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">Biography / Introduction</label>
+                            <textarea name="bio" class="form-control" rows="4" placeholder="Tell us about yourself..."></textarea>
+                        </div>
+                        
+                        <div class="d-flex flex-column gap-3">
+                            <button type="submit" class="uiverse-btn btn-save-rainbow">
+                            </button>
+                            
+                            <a href="menu.html" class="text-decoration-none">
+                                <button type="button" class="uiverse-btn btn-back-sliding">
+                                </button>
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+    const canvas = document.getElementById('particle-canvas');
+    const ctx = canvas.getContext('2d');
+
+    let particles = [];
+    const colors = ['#3b82f6', '#6366f1', '#ec4899', '#a855f7', '#38bdf8']; 
+
+    function resizeCanvas() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    class Particle {
+        constructor() {
+            this.reset();
+        }
+
+        reset() {
+            this.x = canvas.width / 2;
+            this.y = canvas.height / 2;
+            
+            this.radius = Math.random() * 4 + 1.5; 
+            this.color = colors[Math.floor(Math.random() * colors.length)];
+            
+            const angle = Math.random() * Math.PI * 2;
+            const speed = Math.random() * 3.5 + 1.0; 
+            this.vx = Math.cos(angle) * speed;
+            this.vy = Math.sin(angle) * speed;
+            
+            this.alpha = 0; 
+            this.maxLife = Math.random() * 150 + 80;
+            this.life = 0;
+        }
+
+        update() {
+            this.x += this.vx * 1.015;
+            this.y += this.vy * 1.015;
+            this.life++;
+
+            if (this.life < 30) {
+                this.alpha = this.life / 30;
+            } else if (this.life > this.maxLife - 40) {
+                this.alpha = (this.maxLife - this.life) / 40;
+            } else {
+                this.alpha = 1;
+            }
+
+            if (this.life >= this.maxLife || this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) {
+                this.reset();
+            }
+        }
+
+        draw() {
+            ctx.save();
+            ctx.globalAlpha = this.alpha;
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+            ctx.fillStyle = this.color;
+            
+            ctx.shadowBlur = 12;
+            ctx.shadowColor = this.color;
+            
+            ctx.fill();
+            ctx.restore();
+        }
+    }
+
+    function init() {
+        particles = [];
+        for (let i = 0; i < 120; i++) {
+            particles.push(new Particle());
+            particles[i].life = Math.random() * 60;
+            particles[i].x += particles[i].vx * particles[i].life;
+            particles[i].y += particles[i].vy * particles[i].life;
+        }
+    }
+
+    function animate() {
+        ctx.fillStyle = 'rgba(13, 14, 18, 0.25)'; 
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        particles.forEach(particle => {
+            particle.update();
+            particle.draw();
+        });
+
+        requestAnimationFrame(animate);
+    }
+
+    init();
+    animate();
+    </script>
+</body>
+</html>
